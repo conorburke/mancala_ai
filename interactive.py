@@ -16,8 +16,8 @@ top_reversed.append(game.board.top[6])
 print('welcome to mancala')
 print('game size will be six moving holes and one mancala')
 print('starting board is shown below')
-print('top     ', top_reversed[0:game.size - 1])
-print('bottom  ', game.board.bottom[0:game.size - 1])
+print('top     ', top_reversed[0:game.board.size - 1])
+print('bottom  ', game.board.bottom[0:game.board.size - 1])
 print('you are the bottom player...')
 while not game.game_is_over():
     if game.current_player == Player.bottom:
@@ -38,8 +38,8 @@ while not game.game_is_over():
     for i in range(5, -1, -1):
         top_reversed.append(game.board.top[i])
     top_reversed.append(game.board.top[6])
-    print('top     ', top_reversed[0:game.size - 1], '  points: ', top_reversed[game.size - 1:])
-    print('bottom  ', game.board.bottom[0:game.size - 1], '  points: ', game.board.bottom[game.size - 1:])
+    print('top     ', top_reversed[0:game.board.size - 1], '  points: ', top_reversed[game.board.size - 1:])
+    print('bottom  ', game.board.bottom[0:game.board.size - 1], '  points: ', game.board.bottom[game.board.size - 1:])
 if game.board.bottom[6] > game.board.top[6]:
     bottom_wins += 1
     print('bottom wins!')
