@@ -12,6 +12,9 @@ class Player(enum.Enum):
     def other(self):
         return Player.top if self == Player.bottom else Player.bottom
 
+class Tie:
+    pass
+
 
 class Board:
     def __init__(self, size=7):
@@ -110,3 +113,13 @@ class GameState:
                     self.board.top[i] = 0
             return True
         return False
+
+    def determine_winner(self):
+        if self.game_is_over():
+            if self.board.top[self.board.size - 1] > self.board.bottom[self.board.size - 1]:
+                return Player.top
+            elif self.board.bottom[self.board.size - 1] > self.board.top[self.board.size - 1]:
+                return Player.bottom
+            else:
+                return Tie()
+        return None
