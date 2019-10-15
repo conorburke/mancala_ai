@@ -27,6 +27,7 @@ class GameState:
     def __init__(self, board, current_player=Player.bottom):
         self.board = board
         self.current_player = current_player
+        self.is_over = False
 
     @classmethod
     def new_game(cls, size=7):
@@ -111,8 +112,8 @@ class GameState:
                 self.board.top[end_hole] += sum(self.board.top[0:6])
                 for i in range(0, end_hole):
                     self.board.top[i] = 0
-            return True
-        return False
+            return not self.is_over
+        return self.is_over
 
     def determine_winner(self):
         if self.game_is_over():
@@ -123,3 +124,12 @@ class GameState:
             else:
                 return Tie()
         return None
+
+    def concede(self):
+        self.over = True
+
+    def is_valid_move(self, position):
+        print('current player)', self.current_player)
+        if self.board.__getattribute__(str(self.current_player))[position] == 0:
+            return False
+        return True
