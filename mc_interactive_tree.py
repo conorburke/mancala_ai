@@ -25,7 +25,7 @@ while not game.game_is_over():
     if (agent == Player.top and game.current_player == Player.bottom) or (agent == Player.bottom and game.current_player == Player.top):
         move = input("enter between 1 and 6: ")
         move = int(move)
-        while move < 1 or move > 6 or not game.is_valid_move(move - 1):
+        while move < 1 or move > 6 or not game.valid_move(move - 1):
             move = input("enter between 1 and 6 (non zero): ")
             move = int(move)
         # remove array indexing consideration while playing

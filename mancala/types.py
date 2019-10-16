@@ -126,10 +126,11 @@ class GameState:
         return None
 
     def concede(self):
-        self.over = True
+        self.is_over = True
 
-    def is_valid_move(self, position):
-        print('current player)', self.current_player)
+    def valid_move(self, position):
+        # print('current player ivm', self.current_player)
+        # print('position', position)
         if self.board.__getattribute__(str(self.current_player))[position] == 0:
             return False
         return True
