@@ -8,7 +8,7 @@ bottom_wins = 0
 draws = 0
 start_time = datetime.now()
 
-for i in range(1, 1001):
+for i in range(1, 11):
     game = GameState.new_game(7)
     while not game.game_is_over():
         move = 0
@@ -21,8 +21,8 @@ for i in range(1, 1001):
 
         else:
             mc = MonteCarloNode(game)
-            mc.add_children()
-            move = mc.children.index(max(mc.children))
+            mc.determine_win_probabilities()
+            move = mc.probabilities.index(max(mc.probabilities))
         game = game.apply_move(move)
         print('top     ', game.board.top)
         print('bottom  ', game.board.bottom)

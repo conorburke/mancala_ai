@@ -40,10 +40,10 @@ while not game.game_is_over():
     top_reversed.append(game.board.top[6])
     print('top     ', top_reversed[0:game.board.size - 1], '  points: ', top_reversed[game.board.size - 1:])
     print('bottom  ', game.board.bottom[0:game.board.size - 1], '  points: ', game.board.bottom[game.board.size - 1:])
-if game.board.bottom[6] > game.board.top[6]:
+if game.determine_winner() == Player.bottom:
     bottom_wins += 1
     print('bottom wins!')
-elif game.board.bottom[6] < game.board.top[6]:
+elif game.determine_winner() == Player.top:
     top_wins += 1
     print('top wins!')
 else:

@@ -27,6 +27,7 @@ class GameState:
     def __init__(self, board, current_player=Player.bottom):
         self.board = board
         self.current_player = current_player
+        self.is_over = False
 
     @classmethod
     def new_game(cls, size=7):
@@ -48,8 +49,12 @@ class GameState:
 
         self.board.__getattribute__(str(self.current_player))[position] = 0
 
+        # add_extra accounts for skipping an oppenent's mancala (end hole)
+        add_extra = 0
+
         for bead in range(1, beads_to_move + 1):
-            counter = position + bead
+            counter = position + bead + add_extra
+            # position is 4
 
             if counter < self.board.size:
                 self.board.__getattribute__(str(self.current_player))[counter] += 1
@@ -63,11 +68,11 @@ class GameState:
                         += self.board.__getattribute__(str(self.current_player.other))[self.board.size - 2 - counter]
                     self.board.__getattribute__(str(self.current_player.other))[self.board.size - 2 - counter] = 0
             elif self.board.size <= counter < (self.board.size * 2):
-                if self.board.__getattribute__(str(self.current_player.other))[counter - self.board.size] == 6:
+                if counter - self.board.size == 6:
                     # don't add beads to opponents mancala (end_hole)
                     counter += 1
                     self.board.__getattribute__(str(self.current_player))[counter - self.board.size * 2] += 1
-                    bead += 1
+                    add_extra += 1
                 else:
                     # print(self.board.__getattribute__(str(self.current_player.other))[counter - self.board.size])
                     self.board.__getattribute__(str(self.current_player.other))[counter - self.board.size] += 1
@@ -82,11 +87,11 @@ class GameState:
                         += self.board.__getattribute__(str(self.current_player.other))[self.board.size - 2 - (counter - self.board.size * 2)]
                     self.board.__getattribute__(str(self.current_player.other))[self.board.size - 2 - (counter - self.board.size * 2)] = 0
             elif (self.board.size * 3) <= counter < (self.board.size * 4):
-                if self.board.__getattribute__(str(self.current_player.other))[counter - self.board.size * 3] == 6:
+                if counter - self.board.size * 3 == 6:
                     # don't add beads to opponents mancala (end_hole)
                     counter += 1
                     self.board.__getattribute__(str(self.current_player))[counter - self.board.size * 4] += 1
-                    bead += 1
+                    add_extra += 1
                 else:
                     self.board.__getattribute__(str(self.current_player.other))[counter - self.board.size * 3] += 1
             else:
@@ -111,8 +116,8 @@ class GameState:
                 self.board.top[end_hole] += sum(self.board.top[0:6])
                 for i in range(0, end_hole):
                     self.board.top[i] = 0
-            return True
-        return False
+            return not self.is_over
+        return self.is_over
 
     def determine_winner(self):
         if self.game_is_over():
@@ -123,3 +128,13 @@ class GameState:
             else:
                 return Tie()
         return None
+
+    def concede(self):
+        self.is_over = True
+
+    def valid_move(self, position):
+        # print('current player ivm', self.current_player)
+        # print('position', position)
+        if self.board.__getattribute__(str(self.current_player))[position] == 0:
+            return False
+        return True
