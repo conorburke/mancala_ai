@@ -1,10 +1,10 @@
 from mancala import Player
 import random
 import copy
-import datetime
+
 
 class MonteCarloNode:
-    def __init__(self, game_state, parent=None, player=Player.top):
+    def __init__(self, game_state, parent=None, player=Player.top, move=None):
         self.game_state = game_state
         self.parent = parent
         self.player = player
@@ -15,10 +15,14 @@ class MonteCarloNode:
         self.num_rollouts = 0
         self.probabilities = []
         self.children = []
+        self.move = move
 
     def add_child(self, game_state, player):
         # print('appending')
-        child_node = MonteCarloNode(game_state, self, player.other)
+        move = self.get_random_valid_move(game_state)
+        current_game_state = copy.deepcopy(self.game_state)
+        new_game_state = current_game_state.apply_move(move)
+        child_node = MonteCarloNode(new_game_state, self, player.other, move)
         # print('self children', self.children)
         self.children.append(child_node)
         return child_node
@@ -70,11 +74,10 @@ class MonteCarloNode:
             bottom_wins += c.win_counts['bottom']
         return self.determine_win_ratio(self.player)
 
-    def get_random_valid_move(self, game_state):
-        move = random.randint(0, 5)
-        while not self.is_valid_move(self.player, move):
-        # while game_state.board.__getattribute__(str(self.player))[move] == 0:
-            move = random.randint(0, 5)
+    def get_random_valid_move(self, gs):
+        move = random.randint(0, gs.board.size - 2)
+        while self.is_invalid_move(gs, self.player, move):
+            move = random.randint(0, gs.board.size - 2)
         return move
 
     def determine_best_move(self, game_state):
@@ -89,9 +92,8 @@ class MonteCarloNode:
             move = self.probabilities.index(max(self.probabilities))
         return move
 
-    def is_valid_move(self, player, move):
-        # print('ivm', game_state.board.__getattribute__(str(player)))
-        if self.board.__getattribute__(str(player))[move] != 0:
+    def is_invalid_move(self, gs, player, move):
+        if gs.board.__getattribute__(str(player))[move] == 0:
             return True
         return False
 
@@ -107,15 +109,19 @@ class ComprehensiveTree:
         pass
 
     def construct_tree(self, node, game):
-        # stop = datetime.datetime.now() + datetime.timedelta(seconds=30)
+        # stop = datetime.datetime.now() + datetime.timedelta(seconds=1)
+        # while stop > datetime.datetime.now():
         for m in range(0, game.board.size - 1):
+        #     m = random.randint(0, game.board.size - 2)
+        #     print('m', m)
             new_game_state = copy.deepcopy(game)
             if game.valid_move(m):
                 # stop = datetime.datetime.now() + datetime.timedelta(seconds=30)
                 updated_game_state = new_game_state.apply_move(m)
-                print('updated game state top', updated_game_state.board.top)
-                print('updated game state bottom', updated_game_state.board.bottom)
+                # print('updated game state top', updated_game_state.board.top)
+                # print('updated game state bottom', updated_game_state.board.bottom)
                 child = node.add_child(updated_game_state, updated_game_state.current_player.other)
+                # print('node children', node.children)
                 # if len(node.children) > 1:
                     # print('node child', node.children[1])
                     # print('node', node)
@@ -123,16 +129,53 @@ class ComprehensiveTree:
                 if child and not child.game_state.game_is_over():
                     self.construct_tree(child, updated_game_state)
                 if child and child.game_state.game_is_over():
-                    print('winner', child.game_state.determine_winner())
+                    # print('winner', child.game_state.determine_winner())
                     if child.game_state.determine_winner() == Player.top:
                         child.win_counts['top'] += 1
                         while child.parent is not None:
                             child.parent.win_counts[str(Player.top)] += 1
                             child = child.parent
-                        print(child.win_counts)
+                        # print(child.win_counts)
                     elif child.game_state.determine_winner() == Player.bottom:
                         child.win_counts['bottom'] += 1
                         while child.parent is not None:
                             child.parent.win_counts[str(Player.bottom)] += 1
                             child = child.parent
-                        print(child.win_counts)
+                        # print(child.win_counts)
+
+
+class MonteCarloTree:
+    def __init__(self):
+        pass
+
+    def construct_tree(self, node, game, rounds):
+        # stop = datetime.datetime.now() + datetime.timedelta(seconds=1)
+        # while stop > datetime.datetime.now():
+        for r in range(0, rounds):
+            m = random.randint(0, game.board.size - 2)
+            print('m', m)
+            while not game.valid_move(m):
+                m = random.randint(0, game.board.size - 2)
+            updated_game_state = copy.deepcopy(game).apply_move(m)
+            child = node.add_child(updated_game_state, updated_game_state.current_player.other)
+            while not updated_game_state.game_is_over():
+                m = random.randint(0, game.board.size - 2)
+                while not updated_game_state.valid_move(m):
+                    m = random.randint(0, game.board.size - 2)
+                updated_game_state.apply_move(m)
+                if child and not child.game_state.game_is_over():
+                    self.construct_tree(child, copy.deepcopy(updated_game_state), rounds)
+            if updated_game_state.game_is_over():
+                # print('winner', child.game_state.determine_winner())
+                if child.game_state.determine_winner() == Player.top:
+                    child.win_counts['top'] += 1
+                    while child.parent is not None:
+                        child.parent.win_counts[str(Player.top)] += 1
+                        child = child.parent
+                    print(child.win_counts)
+                elif child.game_state.determine_winner() == Player.bottom:
+                    child.win_counts['bottom'] += 1
+                    while child.parent is not None:
+                        child.parent.win_counts[str(Player.bottom)] += 1
+                        child = child.parent
+                    print(child.win_counts)

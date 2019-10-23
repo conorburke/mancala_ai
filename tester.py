@@ -1,6 +1,10 @@
-from agent import MonteCarloNode, ComprehensiveTree
+from agent import MonteCarloNode, ComprehensiveTree, MonteCarloTree
 from mancala import GameState, Player
 import datetime
+import signal
+import multiprocessing
+from threading import Thread, Event
+import copy
 
 
 # def construct_tree(node, game):
@@ -16,7 +20,7 @@ import datetime
 #                 construct_tree(child, new_game_state)
 
 
-game = GameState.new_game(4)
+game = GameState.new_game(7)
 top_reversed = []
 for i in range(game.board.size - 2, -1, -1):
     top_reversed.append(game.board.top[i])
@@ -31,18 +35,62 @@ choice = int(input('do you want top (1) or bottom(2): '))
 player = Player.bottom if choice == 1 else Player.top
 
 node = MonteCarloNode(game, None, player)
+
+mc_tree = MonteCarloTree()
+mc_tree.construct_tree(node, game, 3)
+for c in node.children:
+    print('child', c)
+print(node.win_counts)
+
+
+
+
+
 # construct_tree(node, game)
-tree = ComprehensiveTree()
+# tree = ComprehensiveTree()
 # stop = datetime.datetime.now() + datetime.timedelta(seconds=10)
 # while datetime.datetime.now() < stop:
-tree.construct_tree(node, game)
-print('treeeeee')
-print('tree', tree)
-print('node', node)
-print('node children', node.children)
-for c in node.children:
-    print(c.win_counts)
-print(node.win_counts)
+
+# p = multiprocessing.Process(target=tree.construct_tree, args=(node, game))
+# p.start()
+# p.join(5)
+# if p.is_alive():
+#     p.terminate()
+#     p.join()
+
+
+# print('node', node)
+# e = Event()
+# t = Thread(target=tree.construct_tree, args=(node, game,))
+# t.daemon = True
+# print(t)
+# t.start()
+# t.join(5)
+# if t.is_alive():
+#     e.set()
+# # t.join()
+#     # p.join()
+#
+# root = copy.deepcopy(node)
+
+
+# tree.construct_tree(node, game)
+# print('treeeeee')
+# print('tree', tree)
+# print('node', node)
+# print('node children', node.children)
+# print('win counts', node.win_counts)
+# print('rollouts', node.num_rollouts)
+# for c in node.children:
+#     print('child', c)
+# print(node.win_counts)
+
+# print(p)
+
+
+
+
+
 # print('node child', node.children[1].children)
 # print('node', node)
 # print('node child parent', node.children[0].parent)

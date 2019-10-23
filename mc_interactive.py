@@ -37,7 +37,7 @@ while not game.game_is_over():
         # remove array indexing consideration while playing
         move -= 1
     else:
-        mc = MonteCarloNode(game, player=agent)
+        mc = MonteCarloNode(game_state=game, player=agent)
         mc.determine_win_probabilities()
         print(mc.probabilities)
         move = mc.determine_best_move(game)
