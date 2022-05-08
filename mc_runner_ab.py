@@ -1,4 +1,4 @@
-from agent import MonteCarloNode
+from agent import MonteCarloNode, AlphaBetaPruner
 from mancala import GameState, Player
 from datetime import datetime
 
@@ -38,10 +38,12 @@ while not game.game_is_over():
         move -= 1
     else:
         print('Agent is thinking...')
-        mc = MonteCarloNode(game_state=game, player=agent)
+        # mc = MonteCarloNode(game_state=game, player=agent)
+        abp = AlphaBetaPruner(game, player=agent)
         # mc.determine_win_probabilities()
         # print(mc.probabilities)
-        move = mc.determine_best_move()
+        # move = mc.determine_best_move()
+        move = abp.ab_prune()
         print('Agent moved %i' % int(move + 1))
     # while game.board.__getattribute__(str(game.current_player))[move] == 0:
     #     move = random.randint(0, 5)

@@ -39,7 +39,9 @@ class MonteCarloNode:
                 new_game_state = current_game_state.apply_move(i)
                 # print(new_game_state)
                 while not new_game_state.game_is_over():
-                    move = self.get_random_valid_move(new_game_state)
+                    move = self.get_smart_valid_move()
+                    if not move:
+                        move = self.get_random_valid_move(new_game_state)
                     new_game_state = new_game_state.apply_move(move)
                     # print('top     ', new_game_state.board.top)
                     # print('bottom  ', new_game_state.board.bottom)
@@ -80,17 +82,59 @@ class MonteCarloNode:
             move = random.randint(0, gs.board.size - 2)
         return move
 
-    def determine_best_move(self, game_state):
-        move = self.probabilities.index(max(self.probabilities))
-        while not game_state.valid_move(move):
-            if max(self.probabilities) == 0:
-                move = 0
-                print('Player wins')
-                exit()
-                break
-            self.probabilities[self.probabilities.index(max(self.probabilities))] = 0
+    def get_smart_valid_move(self):
+        move = self.get_empty_stones(3)
+        if move is not None:
+            return move
+        move = self.determine_if_repeat()
+        if move is not None:
+            return move
+        move = self.get_empty_stones(1)
+        if move is not None:
+            return move
+        return None
+
+    def determine_if_repeat(self):
+        for i in range(self.game_state.board.size - 2, -1, -1):
+            if self.game_state.board.__getattribute__(str(self.game_state.current_player))[i] + i == self.game_state.board.size - 1:
+                return i
+        return None
+
+    def get_empty_stones(self, threshold=1):
+        for i in range(0, self.game_state.board.size - 1):
+            num_stones = self.game_state.board.__getattribute__(str(self.game_state.current_player))[i]
+            if i + num_stones < self.game_state.board.size - 1 and num_stones > 1:
+                if self.game_state.board.__getattribute__(str(self.game_state.current_player.other))[self.game_state.board.size - 2 - i] >= threshold \
+                and self.game_state.board.__getattribute__(str(self.game_state.current_player))[i + num_stones] == 0:
+                    return i
+        return None
+
+    def determine_best_move(self):
+        # empty_stones = self.get_empty_stones(3)
+        # if empty_stones:
+        #     return empty_stones
+        # repeatable_move = self.determine_if_repeat()
+        # if repeatable_move is not None:
+        #     return repeatable_move
+        # empty_stones = self.get_empty_stones(1)
+        # if empty_stones:
+        #     return empty_stones
+        move = self.get_smart_valid_move()
+        if move:
+            return move
+        else:
+            self.determine_win_probabilities()
+            print(self.probabilities)
             move = self.probabilities.index(max(self.probabilities))
-        return move
+            while not self.game_state.valid_move(move):
+                if max(self.probabilities) == 0:
+                    move = 0
+                    print('Player wins')
+                    exit()
+                    break
+                self.probabilities[self.probabilities.index(max(self.probabilities))] = 0
+                move = self.probabilities.index(max(self.probabilities))
+            return move
 
     def is_invalid_move(self, gs, player, move):
         if gs.board.__getattribute__(str(player))[move] == 0:
