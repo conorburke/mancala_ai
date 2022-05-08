@@ -12,9 +12,15 @@ class AlphaBetaPruner:
 
     def evaluate_position(self, game_state):
         if self.player == Player.top:
-            return float(game_state.board.top[-1] - game_state.board.bottom[-1]) * 5 #+ float(sum(game_state.board.top) - sum(game_state.board.bottom))
+            # return float(sum(game_state.board.top) - sum(game_state.board.bottom))
+            # return float(game_state.board.top[-1] - game_state.board.bottom[-1]) + float(sum(game_state.board.top[0:-1]) - sum(game_state.board.bottom[0:-1]))
+            # return float(game_state.board.top[-1] - game_state.board.bottom[-1]) * 5 #+ float(sum(game_state.board.top) - sum(game_state.board.bottom))
+            return float(game_state.board.top[-1] - game_state.board.bottom[-1]) * 5 + float(sum(game_state.board.top[0:-1]) - sum(game_state.board.bottom[0:-1]))
         else:
-            return float(game_state.board.bottom[-1] - game_state.board.top[-1]) * 5 #+ float(sum(game_state.board.bottom) - sum(game_state.board.top))
+            # return float(sum(game_state.board.bottom) - sum(game_state.board.top))
+            # return float(game_state.board.bottom[-1] - game_state.board.top[-1]) + float(sum(game_state.board.bottom[0:-1]) - sum(game_state.board.top[0:-1]))
+            # return float(game_state.board.bottom[-1] - game_state.board.top[-1]) * 5 #+ float(sum(game_state.board.bottom) - sum(game_state.board.top))
+            return float(game_state.board.bottom[-1] - game_state.board.top[-1]) * 5 + float(sum(game_state.board.bottom[0:-1]) - sum(game_state.board.top[0:-1]))
 
     def is_invalid_move(self, game_state, player, move):
         if game_state.board.__getattribute__(str(player))[move] == 0:

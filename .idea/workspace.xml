@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ad9302c3-17de-44d5-bf5d-780bd0165d33" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/agent/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/agent/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/agent/monte_carlo_tree_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/agent/monte_carlo_tree_search.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mc_interactive.py" beforeDir="false" afterPath="$PROJECT_DIR$/mc_interactive.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,9 +198,9 @@
     </state>
     <state width="1687" height="213" key="GridCell.Tab.0.right/0.23.1280.777/1280.-257.1920.989@1280.-257.1920.989" timestamp="1582671858004" />
     <state width="1259" height="213" key="GridCell.Tab.0.right/0.23.1280.777@0.23.1280.777" timestamp="1582633436165" />
-    <state x="317" y="210" key="com.intellij.ide.util.TipDialog" timestamp="1589613346618">
+    <state x="317" y="210" key="com.intellij.ide.util.TipDialog" timestamp="1589625817430">
       <screen x="0" y="23" width="1280" height="709" />
     </state>
-    <state x="317" y="210" key="com.intellij.ide.util.TipDialog/0.23.1280.709@0.23.1280.709" timestamp="1589613346618" />
+    <state x="317" y="210" key="com.intellij.ide.util.TipDialog/0.23.1280.709@0.23.1280.709" timestamp="1589625817430" />
   </component>
 </project>
